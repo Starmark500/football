@@ -14,24 +14,24 @@ speed_y=2
 right_ball=sprite.get_right(ball)
 
 
-@wrap.always(10)
-def fly_ball():
-    global speed_x,speed_y
-    sprite.move(ball, speed_x, speed_y)
-    right_ball = sprite.get_right(ball)
-    left_ball = sprite.get_left(ball)
-    top_ball = sprite.get_top(ball)
-    bottom_ball = sprite.get_bottom(ball)
-    print(bottom_ball)
-    if right_ball > 1000:
-        speed_x=-speed_x
-    if left_ball < 0:
-        speed_x=-speed_x
-    if bottom_ball > 500:
-        speed_y=-speed_y
-    if top_ball < 0:
-        speed_y=-speed_y
-    otbivka_platform()
+# @wrap.always(10)
+# def fly_ball():
+#     global speed_x,speed_y
+#     sprite.move(ball, speed_x, speed_y)
+#     right_ball = sprite.get_right(ball)
+#     left_ball = sprite.get_left(ball)
+#     top_ball = sprite.get_top(ball)
+#     bottom_ball = sprite.get_bottom(ball)
+#     print(bottom_ball)
+#     if right_ball > 1000:
+#         speed_x=-speed_x
+#     if left_ball < 0:
+#         speed_x=-speed_x
+#     if bottom_ball > 500:
+#         speed_y=-speed_y
+#     if top_ball < 0:
+#         speed_y=-speed_y
+#     otbivka_platform()
 @wrap.on_key_always(wrap.K_DOWN,wrap.K_UP)
 def move_platform(keys):
     if wrap.K_DOWN in keys:
@@ -44,16 +44,32 @@ def move_platform(keys):
         sprite.move(platform2,0,10)
     else:
         sprite.move(platform2,0,-10)
-
+@wrap.always(10)
 def otbivka_platform():
-    global speed_x
-    left_platform=sprite.get_left(platform1)
+    global speed_x,speed_y
+
+    right_plat = sprite.get_right(platform1)
+    left_plat = sprite.get_left(platform1)
+    right_plat2 = sprite.get_right(platform2)
+    left_plat2 = sprite.get_left(platform2)
+    sprite.move(ball,speed_x,0)
     if sprite.is_collide_sprite(ball,platform1):
-        sprite.move_right_to(ball,left_platform)
+        if speed_x>0:
+            sprite.move_right_to(ball,left_plat)
+        elif speed_x<0:
+            sprite.move_left_to(ball,right_plat)
+        speed_x=-speed_x
+    if sprite.is_collide_sprite(ball,platform2):
+        if speed_x>0:
+            sprite.move_right_to(ball,left_plat2)
+        elif speed_x<0:
+            sprite.move_left_to(ball,right_plat2)
         speed_x=-speed_x
 
-
-
+    if sprite.get_right(ball) > 1000:
+        speed_x=-speed_x
+    if sprite.get_left(ball) < 0:
+        speed_x=-speed_x
 
 
 
