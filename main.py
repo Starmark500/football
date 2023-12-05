@@ -16,30 +16,40 @@ sprite.set_height(platform2, 100)
 speed_x = 2
 speed_y = 2
 right_ball = sprite.get_right(ball)
-speed_plat=10
+speed_plat = 10
+speed_plat2 = 10
 
 
 @wrap.on_key_always(wrap.K_DOWN, wrap.K_UP)
 def move_platform(keys):
-    global speed_plat,speed_y
+    global speed_plat, speed_y
     if wrap.K_DOWN in keys:
+        speed_plat = abs(speed_plat)
         sprite.move(platform1, 0, speed_plat)
     else:
-        sprite.move(platform1, 0, -speed_plat)
-    if sprite.is_collide_sprite(platform1,ball):
-        if speed_plat > 0:
-            speed_y=-speed_y
+        speed_plat = -abs(speed_plat)
+        sprite.move(platform1, 0, speed_plat)
+    if sprite.is_collide_sprite(platform1, ball):
         if speed_plat < 0:
-            speed_y = -speed_y
-
+            sprite.move_bottom_to(ball, sprite.get_top(platform1))
+        if speed_plat > 0:
+            sprite.move_top_to(ball, sprite.get_bottom(platform1))
 
 
 @wrap.on_key_always(wrap.K_w, wrap.K_s)
 def move_platform(keys):
+    global speed_plat2
     if wrap.K_s in keys:
-        sprite.move(platform2, 0, 10)
+        speed_plat2 = abs(speed_plat2)
+        sprite.move(platform2, 0, speed_plat2)
     else:
-        sprite.move(platform2, 0, -10)
+        speed_plat2 = -abs(speed_plat2)
+        sprite.move(platform2, 0, speed_plat2)
+    if sprite.is_collide_sprite(platform2, ball):
+        if speed_plat2 < 0:
+            sprite.move_bottom_to(ball, sprite.get_top(platform2))
+        if speed_plat2 > 0:
+            sprite.move_top_to(ball, sprite.get_bottom(platform2))
 
 
 def otbivka_x(id):
