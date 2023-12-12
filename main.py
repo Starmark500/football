@@ -1,3 +1,5 @@
+import time
+
 import wrap
 from wrap import sprite, sprite_text, world
 
@@ -8,11 +10,12 @@ ball = sprite.add("mario-enemies", 500, 250, "armadillo_egg")
 sprite.set_size(ball, 50, 50)
 platform1 = sprite.add("mario-items", 900, 250, "moving_platform3")
 platform2 = sprite.add("mario-items", 150, 250, "moving_platform3")
-goal1=0
-goal2=0
-timer=sprite.add_text(str(goal1),900,100,text_color=[200,170,40],font_size=100)
-timer1=sprite.add_text(str(goal2),100,100,text_color=[139,150,108],font_size=100)
+goal1 = 0
+goal2 = 0
 
+timer = sprite.add_text(str(goal1), 900, 100, text_color=[200, 170, 40], font_size=100)
+timer1 = sprite.add_text(str(goal2), 100, 100, text_color=[139, 150, 108], font_size=100)
+timer_start = sprite.add_text("0", 500, 180, font_size=50)
 sprite.set_angle(platform2, 180)
 sprite.set_angle(platform1, 180)
 sprite.set_height(platform1, 100)
@@ -22,9 +25,31 @@ speed_y = 2
 right_ball = sprite.get_right(ball)
 speed_plat = 10
 speed_plat2 = 10
+time1=time.time()
+mode="timer"
 
-def goal(id,g):
-    sprite_text.set_text(id,str(g+1))
+
+
+
+@wrap.always(100)
+def t_timer():
+    global time1
+    time2=time1-time.time()
+    time2=time2+4
+    if int(time2) <= 0:
+        time1=time.time()
+    time2=int(time2)
+    sprite_text.set_text(timer_start,str(time2))
+
+
+def start_timerball():
+
+    sprite_text.set_text(timer_start,str(3-1))
+    time.time()
+
+def goal(id, g):
+    sprite_text.set_text(id, str(g + 1))
+
 
 @wrap.on_key_always(wrap.K_DOWN, wrap.K_UP)
 def move_platform(keys):
@@ -79,9 +104,10 @@ def otbivka_y(id):
 
 
 @wrap.always(10)
-def otbivka_platform():
-    global speed_x, speed_y,goal2,goal1
-
+def otbivka_ball():
+    global speed_x, speed_y, goal2, goal1
+    if mode == "timer":
+        return
     sprite.move(ball, speed_x, 0)
 
     otbivka_x(platform2)
@@ -89,24 +115,22 @@ def otbivka_platform():
 
     if sprite.get_right(ball) > 1000:
         speed_x = -abs(speed_x)
-        goal(timer,goal1)
+        goal(timer, goal1)
         goal1 += 1
+        sprite.move_to(ball, 500, 250)
     if sprite.get_left(ball) < 0:
         speed_x = abs(speed_x)
-        goal(timer1,goal2)
+        goal(timer1, goal2)
         goal2 += 1
+        sprite.move_to(ball, 500, 250)
 
     sprite.move(ball, 0, speed_y)
     otbivka_y(platform1)
     otbivka_y(platform2)
     if sprite.get_bottom(ball) > 500:
-
         speed_y = -abs(speed_y)
     if sprite.get_top(ball) < 0:
-
         speed_y = abs(speed_y)
-
-
 
 
 
