@@ -26,7 +26,8 @@ right_ball = sprite.get_right(ball)
 speed_plat = 10
 speed_plat2 = 10
 time1=time.time()
-mode="timer"
+mode="game"
+
 
 
 
@@ -34,12 +35,18 @@ mode="timer"
 @wrap.always(100)
 def t_timer():
     global time1
+    if mode != "timer":
+
+        return
+
     time2=time1-time.time()
     time2=time2+4
     if int(time2) <= 0:
         time1=time.time()
+        change_mode("game")
     time2=int(time2)
     sprite_text.set_text(timer_start,str(time2))
+
 
 
 def start_timerball():
@@ -106,8 +113,9 @@ def otbivka_y(id):
 @wrap.always(10)
 def otbivka_ball():
     global speed_x, speed_y, goal2, goal1
-    if mode == "timer":
+    if mode != "game":
         return
+
     sprite.move(ball, speed_x, 0)
 
     otbivka_x(platform2)
@@ -118,11 +126,13 @@ def otbivka_ball():
         goal(timer, goal1)
         goal1 += 1
         sprite.move_to(ball, 500, 250)
+        change_mode("timer")
     if sprite.get_left(ball) < 0:
         speed_x = abs(speed_x)
         goal(timer1, goal2)
         goal2 += 1
         sprite.move_to(ball, 500, 250)
+        change_mode("timer")
 
     sprite.move(ball, 0, speed_y)
     otbivka_y(platform1)
@@ -132,8 +142,15 @@ def otbivka_ball():
     if sprite.get_top(ball) < 0:
         speed_y = abs(speed_y)
 
-
-
+def change_mode(m):
+    global mode,time1
+    mode = m
+    if mode =="timer":
+        sprite.show(timer_start)
+        time1 = time.time()
+    if mode == "game":
+        sprite.hide(timer_start)
+change_mode("timer")
 import wrap_py
 
 wrap_py.app.start()
